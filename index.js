@@ -2,10 +2,68 @@ const express=require("express");
 const app=express();
 const bodyParser=require("body-parser");
 const fetch=require("node-fetch")
+// var http = require('http').Server(app);
+const cors=require('cors');
 
+var socket = require('socket.io');
+
+
+
+
+app.use(cors());
+ app.use(function(req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,PUT,DELETE');
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept');
+  
+  next();
+});
+
+var server=app.listen(4000,()=>{
+    console.log("Listening on port 4000")
+})
+
+
+var io=socket(server, {
+    cors: {
+      origin: '*',
+    }
+});
+
+
+
+io.on('connection', (socket) => {
+    console.log('a user connected',socket.id);
+
+    //listen for emits from client
+    socket.on('coordinates',function(data){
+        console.log(data)
+
+        //broadcast the data to other clients
+        socket.broadcast.emit('coordinates',data);
+    })
+
+
+    
+    socket.on('code',function(data){
+      console.log(data)
+
+      //broadcast the data to other clients
+      socket.broadcast.emit('code',data);
+    })
+
+    
+  });
+  
 
 
 app.use(bodyParser.json())
+
+
+
+
+
 
 
 app.post('/compiler',(req,res)=>{
@@ -41,6 +99,3 @@ app.post('/compiler',(req,res)=>{
 
 })
 
-app.listen(4000,()=>{
-    console.log("Listening on port 4000")
-})
