@@ -1,0 +1,26 @@
+{
+    "name":"usr1",
+    "email":"email1",
+    "password":"password1",
+    "projects":[
+        {
+            "owner":"usr1",
+            "name":"project1",
+            "id":"1",
+            "directories":[
+                {
+                    "name":"direc1",
+                    "id":"1",
+                    "subdirectories":[
+                        {
+                            "name":"subd",
+                            "id":"id1",
+                            "code":"usr code"
+                        }
+                    ]
+                }
+            ]
+            
+        }
+    ]
+}

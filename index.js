@@ -2,13 +2,13 @@ const express=require("express");
 const app=express();
 const bodyParser=require("body-parser");
 const fetch=require("node-fetch")
-// var http = require('http').Server(app);
 const cors=require('cors');
-
 var socket = require('socket.io');
 
+const dbconnect=require('./Database/dbconnect');
+const Schema = require('./Database/Schema');
 
-
+app.use(bodyParser.json());
 
 app.use(cors());
  app.use(function(req, res, next) {
@@ -32,6 +32,36 @@ var io=socket(server, {
 });
 
 
+app.post('/newuser',(req,res)=>{
+  const user =new Schema(req.body);
+  user.save()
+            .then(data=>{
+              console.log(data)
+               return res.status(200).send(data);
+            }).catch(err=>{
+              return res.status(404).send(err);
+            })
+})
+
+app.post('/finduserbyid',(req,res)=>{
+  var id=req.body.id;
+  Schema.findById(id).then(data=>{
+    console.log(data)
+    res.status(200).send(data);
+  }).catch(err=>{console.log(err)})
+})
+
+app.get('/findusers',(req,res)=>{
+  
+  Schema.find()
+  .then(data=>{
+    res.status(200).send(data)
+  })
+  .catch(err=>{
+    res.status(404).send(err);
+  })
+  
+})
 
 io.on('connection', (socket) => {
     console.log('a user connected',socket.id);
