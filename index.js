@@ -36,21 +36,30 @@ var io=socket(server, {
 io.on('connection', (socket) => {
     console.log('a user connected',socket.id);
 
-    //listen for emits from client
-    socket.on('coordinates',function(data){
-        console.log(data)
 
+    //join room 
+    socket.on("join_room", (data)=>{
+      console.log(data)
+
+      socket.join(data.room);
+    })
+
+
+    //listen for emits from client
+    socket.on('coordinates',(data)=>{
+        console.log(data)
+    
         //broadcast the data to other clients
-        socket.broadcast.emit('coordinates',data);
+        socket.to(data.room).broadcast.emit('coordinates',data);
     })
 
 
     
-    socket.on('code',function(data){
+    socket.on('code',(data)=>{
       console.log(data)
-
       //broadcast the data to other clients
-      socket.broadcast.emit('code',data);
+      console.log(data.room)
+      socket.to(data.room).broadcast.emit('code',data);
     })
 
     

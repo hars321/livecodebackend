@@ -1,8 +1,16 @@
 const socket = io.connect('http://localhost:4000');
 
-// socket.emit('message',{
-//     message:"hello world"
-// })
+var room="room2";
+    socket.emit("join_room", room);
+
+
+    var data={"room":'client',
+    "x":"30",
+    "y":"30"
+    }
+    socket.emit("coordinates", data);
+
+
 
 // function showCoords(event) {
 //     var x = event.clientX;
