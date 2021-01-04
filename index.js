@@ -9,6 +9,7 @@ const dbconnect=require('./Database/dbconnect');
 const Schema = require('./Database/Schema');
 
 app.use(bodyParser.json());
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 app.use(cors());
  app.use(function(req, res, next) {
@@ -43,14 +44,36 @@ app.post('/newuser',(req,res)=>{
             })
 })
 
-app.post('/finduserbyid',(req,res)=>{
-  var id=req.body.id;
-  Schema.findById(id).then(data=>{
+app.get('/finduserbyid/:user_id',(req,res)=>{
+  
+  var {user_id}=req.params;
+  
+  Schema.findById(user_id).then(data=>{
     console.log(data)
     res.status(200).send(data);
-  }).catch(err=>{console.log(err)})
+  })
+  .catch(err=>{
+    console.log(err)
+    res.status(404).send(err);
+  })
+
 })
 
+app.get('/findDirectory/:project_id',(req,res)=>{
+
+  var {project_id}=req.params;
+  
+  Schema.find({'projects._id':project_id})
+  .then(data=>{
+    console.log(data)
+    res.status(200).send(data);
+  })
+  .catch(err=>{
+    console.log(err)
+    res.status(404).send(err);
+  })
+
+})
 app.get('/findusers',(req,res)=>{
   
   Schema.find()
