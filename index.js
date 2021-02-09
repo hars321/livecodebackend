@@ -4,6 +4,10 @@ const bodyParser=require("body-parser");
 const fetch=require("node-fetch")
 const cors=require('cors');
 var socket = require('socket.io');
+
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
 var port = process.env.PORT || 4000;
 const dbconnect=require('./Database/dbconnect');
 const Schema = require('./Database/Schema');
@@ -23,22 +27,16 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false })
   next();
 });
 
-var server=app.listen(port,()=>{
+http.listen(port,()=>{
     console.log("Listening on port " + port)
 })
 
 
-var io=socket(server, {
-  handlePreflightRequest: (req, res) => {
-      const headers = {
-          "Access-Control-Allow-Headers": "Content-Type, Authorization",
-          "Access-Control-Allow-Origin": "*", //or the specific origin you want to give access to,
-          "Access-Control-Allow-Credentials": true
-      };
-      res.writeHead(200, headers);
-      res.end();
-  }
-});
+// socket(server, {
+//     cors: {
+//       origin: '*',
+//     }
+// });
 
 
 app.post('/newuser',(req,res)=>{
