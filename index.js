@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-app.use(cors());
+
  app.use(function(req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,PUT,DELETE');
