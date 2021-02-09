@@ -135,7 +135,7 @@ insertCodeWithId=(data)=>{
 
     {"projects.directories.subdirectories._id":subd_id } 
     , 
-    {$set : {"projects.0.directories.$[].subdirectories.$[second].code":code} }
+    {$set : {"projects.$[].directories.$[].subdirectories.$[second].code":code} }
     ,
     {
       "arrayFilters": [
@@ -158,16 +158,13 @@ insertCodeWithId=(data)=>{
 app.post('/updatecode',(req,res)=>{
   // insertCodeWithId(req.body);
   var subd_id=req.body.room;
-  var dir_id=req.body.directory;
-  console.log(subd_id)
+  
   var code=req.body.code
   Schema.updateOne( 
 
-    {
-      "projects.directories._id":dir_id,
-      "projects.directories.subdirectories._id":subd_id } 
+    {"projects.directories.subdirectories._id":subd_id } 
     , 
-    {$set : {"projects.0.directories.$[].subdirectories.$[second].code":code} }
+    {$set : {"projects.$[].directories.$[].subdirectories.$[second].code":code} }
     ,
     {
       "arrayFilters": [
