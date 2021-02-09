@@ -10,6 +10,7 @@ const Schema = require('./Database/Schema');
 const { schema } = require("./Database/Schema");
 
 app.use(bodyParser.json());
+
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 app.use(cors());
@@ -23,7 +24,7 @@ app.use(cors());
 });
 
 var server=app.listen(port,()=>{
-    console.log("Listening on port 4000")
+    console.log("Listening on port " + port)
 })
 
 
@@ -225,12 +226,6 @@ io.on('connection', (socket) => {
     
   });
   
-
-
-app.use(bodyParser.json())
-
-
-
 
 
 
