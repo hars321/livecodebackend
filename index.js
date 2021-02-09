@@ -7,6 +7,7 @@ var socket = require('socket.io');
 
 const dbconnect=require('./Database/dbconnect');
 const Schema = require('./Database/Schema');
+const { schema } = require("./Database/Schema");
 
 app.use(bodyParser.json());
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -47,8 +48,9 @@ app.post('/newuser',(req,res)=>{
 app.get('/finduserbyid/:user_id',(req,res)=>{
   
   var {user_id}=req.params;
-  
-  Schema.findById(user_id).then(data=>{
+  console.log(user_id)
+  Schema.findById(user_id)
+  .then(data=>{
     console.log(data)
     res.status(200).send(data);
   })
@@ -57,6 +59,38 @@ app.get('/finduserbyid/:user_id',(req,res)=>{
     res.status(404).send(err);
   })
 
+})
+
+//find the given user code with id
+app.get('/findcodebyid/:code_id',(req,res)=>{
+  var {code_id}=req.params;
+
+  Schema.findOne({"projects.directories.subdirectories._id":code_id}
+  ,{ "projects.directories.subdirectories.$":true }
+  )
+  .then(data=>{
+    
+    if(data!=undefined){
+      let directories=data.projects[0].directories;
+
+      for(let i=0 ; i<directories.length ; i++){
+        let subdirectory=directories[i].subdirectories;
+        
+        for(let j=0 ; j<subdirectory.length ; j++){
+          
+          if(subdirectory[j]._id==code_id){
+            console.log(subdirectory[j].code)
+            return res.json({"code":subdirectory[j].code});
+          }
+
+        }
+      }
+    }
+  
+  })
+  .catch(err=>{
+    return res.status(404).json(err);
+  })
 })
 
 app.get('/findDirectory/:project_id',(req,res)=>{
@@ -85,7 +119,80 @@ app.get('/findusers',(req,res)=>{
   })
   
 })
+insertCodeWithId=(data)=>{
+  console.log(data)
+  let subd_id = data.room;
+  let dir_id = data.directory;
+  let code = data.code;
+  // console.log(dir_id)
+  // console.log(subd_id)
+  let new_obj={
+    "_id":subd_id,
+    "code":code
+  }
 
+  Schema.updateOne( 
+
+    {"projects.directories.subdirectories._id":subd_id } 
+    , 
+    {$set : {"projects.0.directories.$[].subdirectories.$[second].code":code} }
+    ,
+    {
+      "arrayFilters": [
+        { "second._id": subd_id }
+      ]
+     
+    }
+    
+    )
+    .then(data=>{
+      console.log(data);
+      // return res.send(data);
+    })
+    .catch(err=>{
+      console.log(err);
+    })
+
+}
+
+app.post('/updatecode',(req,res)=>{
+  // insertCodeWithId(req.body);
+  var subd_id=req.body.room;
+  var dir_id=req.body.directory;
+  console.log(subd_id)
+  var code=req.body.code
+  Schema.updateOne( 
+
+    {
+      "projects.directories._id":dir_id,
+      "projects.directories.subdirectories._id":subd_id } 
+    , 
+    {$set : {"projects.0.directories.$[].subdirectories.$[second].code":code} }
+    ,
+    {
+      "arrayFilters": [
+        { "second._id": subd_id }
+      ]
+     
+    }
+    
+    )
+    .then(data=>{
+      console.log(data);
+      return res.send(data);
+    })
+    .catch(err=>{
+      console.log(err);
+    })
+  // res.send("done")
+  
+})
+app.get('/getuserprojects',(req,res)=>{
+  Schema.findOne({"name":"H123"})
+  .then(data=>{
+    return res.send(data);
+  })
+})
 io.on('connection', (socket) => {
     console.log('a user connected',socket.id);
 
@@ -103,16 +210,19 @@ io.on('connection', (socket) => {
         console.log(data)
     
         //broadcast the data to other clients
-        socket.to(data.room).broadcast.emit('coordinates',data);
+        socket.in(data.room).emit('coordinates',data);
     })
 
 
     
     socket.on('code',(data)=>{
       console.log(data)
+
+      //save data on the database
+      insertCodeWithId(data);
       //broadcast the data to other clients
       console.log(data.room)
-      socket.to(data.room).broadcast.emit('code',data);
+      socket.in(data.room).emit('code',data);
     })
 
     
