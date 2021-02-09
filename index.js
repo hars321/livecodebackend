@@ -3,7 +3,10 @@ const app=express();
 const bodyParser=require("body-parser");
 const fetch=require("node-fetch")
 const cors=require('cors');
-var socket = require('socket.io');
+var socket = require('socket.io')({
+  cors:true,
+  origins:["*"],
+ });
 
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
