@@ -4,7 +4,7 @@ const bodyParser=require("body-parser");
 const fetch=require("node-fetch")
 const cors=require('cors');
 var socket = require('socket.io');
-
+var port = process.env.PORT || 4000;
 const dbconnect=require('./Database/dbconnect');
 const Schema = require('./Database/Schema');
 const { schema } = require("./Database/Schema");
@@ -22,7 +22,7 @@ app.use(cors());
   next();
 });
 
-var server=app.listen(4000,()=>{
+var server=app.listen(port,()=>{
     console.log("Listening on port 4000")
 })
 
