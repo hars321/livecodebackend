@@ -1,7 +1,6 @@
 {
   "name": "livecodebackend",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -27,5 +26,6 @@
   "bugs": {
     "url": "https://github.com/hars321/livecodebackend/issues"
   },
-  "homepage": "https://github.com/hars321/livecodebackend#readme"
+  "homepage": "https://github.com/hars321/livecodebackend#readme",
+  "description": ""
 }
