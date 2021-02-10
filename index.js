@@ -16,6 +16,7 @@ const Schema = require('./Database/Schema');
 const { schema } = require("./Database/Schema");
 
 
+app.use(cors());
 
 app.use(function(req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", '*');
