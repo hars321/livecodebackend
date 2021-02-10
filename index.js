@@ -3,13 +3,17 @@ const app=express();
 const bodyParser=require("body-parser");
 const fetch=require("node-fetch")
 const cors=require('cors');
-var socket = require('socket.io')({
-  cors:true,
-  origins:["*"],
- });
 
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+
+var socket = require('socket.io')(http, {
+  cors: {
+    origin: "*",
+    credentials: true
+  }
+});
+
 
 var port = process.env.PORT || 4000;
 const dbconnect=require('./Database/dbconnect');
