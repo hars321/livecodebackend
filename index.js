@@ -9,6 +9,14 @@ const io = require('socket.io')(http);
 
 
 
+
+var port = process.env.PORT || 4000;
+const dbconnect=require('./Database/dbconnect');
+const Schema = require('./Database/Schema');
+const { schema } = require("./Database/Schema");
+
+
+
 app.use(function(req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,PUT,DELETE');
@@ -20,12 +28,6 @@ app.use(function(req, res, next) {
 
 
 
-
-var port = process.env.PORT || 4000;
-const dbconnect=require('./Database/dbconnect');
-const Schema = require('./Database/Schema');
-const { schema } = require("./Database/Schema");
-
 app.use(bodyParser.json());
 
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -33,7 +35,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 var socket = require('socket.io')(http, {
   cors: {
-    origin: "*",
+    origin: "http://localhost:3000",
     credentials: true
   }
 });
