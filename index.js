@@ -15,7 +15,6 @@ const io = socket(http, {
 });
 ;
 
-
 var port = process.env.PORT || 4000;
 const dbconnect=require('./Database/dbconnect');
 const Schema = require('./Database/Schema');
@@ -53,7 +52,7 @@ app.post('/newuser',(req,res)=>{
   const user =new Schema(req.body);
   user.save()
             .then(data=>{
-              console.log(data)
+              
                return res.status(200).send(data);
             }).catch(err=>{
               return res.status(404).send(err);
@@ -63,14 +62,14 @@ app.post('/newuser',(req,res)=>{
 app.get('/finduserbyid/:user_id',(req,res)=>{
   
   var {user_id}=req.params;
-  console.log(user_id)
+  
   Schema.findById(user_id)
   .then(data=>{
-    console.log(data)
+    
     res.status(200).send(data);
   })
   .catch(err=>{
-    console.log(err)
+    
     res.status(404).send(err);
   })
 
@@ -94,7 +93,7 @@ app.get('/findcodebyid/:code_id',(req,res)=>{
         for(let j=0 ; j<subdirectory.length ; j++){
           
           if(subdirectory[j]._id==code_id){
-            console.log(subdirectory[j].code)
+            
             return res.json({"code":subdirectory[j].code});
           }
 
@@ -114,11 +113,11 @@ app.get('/findDirectory/:project_id',(req,res)=>{
   
   Schema.find({'projects._id':project_id})
   .then(data=>{
-    console.log(data)
+    
     res.status(200).send(data);
   })
   .catch(err=>{
-    console.log(err)
+    
     res.status(404).send(err);
   })
 
@@ -135,12 +134,11 @@ app.get('/findusers',(req,res)=>{
   
 })
 insertCodeWithId=(data)=>{
-  console.log(data)
+  
   let subd_id = data.room;
   let dir_id = data.directory;
   let code = data.code;
-  // console.log(dir_id)
-  // console.log(subd_id)
+  
   let new_obj={
     "_id":subd_id,
     "code":code
@@ -190,11 +188,11 @@ app.post('/updatecode',(req,res)=>{
     
     )
     .then(data=>{
-      console.log(data);
+      
       return res.send(data);
     })
     .catch(err=>{
-      console.log(err);
+      return res.send(404).send(err);
     })
   // res.send("done")
   
