@@ -5,7 +5,15 @@ const fetch=require("node-fetch")
 const cors=require('cors');
 
 const http = require('http').Server(app);
-const io = require('socket.io')(http);
+var socket = require('socket.io')
+const io = socket(http, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+;
 
 
 var port = process.env.PORT || 4000;
@@ -32,7 +40,7 @@ app.use(bodyParser.json());
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 
-var socket = require('socket.io')
+
 http.listen(port,()=>{
     console.log("Listening on port " + port)
 })
