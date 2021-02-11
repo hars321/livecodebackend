@@ -18,14 +18,14 @@ const { schema } = require("./Database/Schema");
 
 app.use(cors());
 
-app.use(function(req, res, next) {
-  res.setHeader("Access-Control-Allow-Origin", '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,PUT,DELETE');
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept');
+// app.use(function(req, res, next) {
+//   res.setHeader("Access-Control-Allow-Origin", '*');
+//   res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS,PUT,DELETE');
+//   res.setHeader('Access-Control-Allow-Credentials', true);
+//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept');
   
-  next();
-});
+//   next();
+// });
 
 
 
@@ -34,12 +34,14 @@ app.use(bodyParser.json());
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 
-var socket = require('socket.io')(http, {
-  cors: {
-    origin: "http://localhost:3000",
-    credentials: true
-  }
-});
+var socket = require('socket.io')(http
+//   , {
+//   cors: {
+//     origin: "http://localhost:3000",
+//     credentials: true
+//   }
+// }
+);
 
 http.listen(port,()=>{
     console.log("Listening on port " + port)
