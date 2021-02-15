@@ -48,28 +48,80 @@ http.listen(port,()=>{
 
 
 
-app.post('/newuser',(req,res)=>{
-  const user =new Schema(req.body);
+app.post('/login',(req,res)=>{
+  
+  Schema.findOne({"email":req.body.email, "password":req.body.password})
+  .then(data=>{
+    console.log(data)
+    return res.json({"status":"success","id":data._id})
+  })
+  .catch(err=>{
+    return res.send({"status":"Error","value":err});
+  });
+})
+
+
+app.post('/signup',(req,res)=>{
+  
+  var data = {
+    "name":req.body.name,
+    "email":req.body.email,
+    "password":req.body.password,	
+    "projects":[
+      {
+        "owner":req.body.name,
+          "name":"Sample Project",
+          "description":"Coding Group",
+          "directories":
+            [
+              {
+                "name":"Directory - 1 ",
+                "subdirectories":[
+                  
+                      {"name":"Subdirectory -1 ",
+                      "code":"Type your code here ..."}
+                  ]
+              }
+            ]
+      }
+      ]
+  }
+
+  const user =new Schema(data);
   user.save()
             .then(data=>{
               
-               return res.status(200).send(data);
+              // res
+              console.log(data._id)
+              return res.json({"status":"success","id":data._id})
             }).catch(err=>{
-              return res.status(404).send(err);
+              return res.send({"status":"Error","value":err});
             })
 })
+
+// app.post('/login',(req,res)=>{
+//   const user =new Schema(req.body);
+//   user.save()
+//             .then(data=>{
+//               return res.json({"status":"success","id":data._id})
+//             }).catch(err=>{
+//               return res.send({"status":"Error","value":err});
+//             })
+// })
+
 
 app.get('/finduserbyid/:user_id',(req,res)=>{
   
   var {user_id}=req.params;
+  console.log(user_id)
   
   Schema.findById(user_id)
   .then(data=>{
-    
+    console.log(data);
     res.status(200).send(data);
   })
   .catch(err=>{
-    
+    console.log(err);
     res.status(404).send(err);
   })
 
@@ -238,9 +290,38 @@ io.on('connection', (socket) => {
     
   });
   
+  app.get('/',(req,res)=>{
+    res.send("HEllo");
+  })
+// app.post('/newproject',(req,res)=>{
+//   let user_id=req.body.user_id;
+//   console.log(user_id)
+//   Schema.update(
+//     { _id: user_id },
+//     { $push: { projects:{"helo":"ki"} } }
+//  )
+//  .then(data=>{
+//    console.log(data);
+//    return res.send(data);
+//  })
+//  .catch(err=>{
+//    console.log(err);
+//    return res.send(err);
+//  })
+ 
+// })
 
+// app.get('/delete',(req,res)=>{
+//   console.log("heoo")
+//   Schema.deleteOne( {"projects._id": "6024f771339ee941dcc9f1a7"})
+//   .then(data=>{
+//     return res.send(data);
+//   })
+//   .catch(err=>{
+//     return res.send(err);
+//   })
 
-
+// })
 
 app.post('/compiler',(req,res)=>{
     let client_id="9edc05a256539bd4f82b68fb24e3bec9"

@@ -39,11 +39,15 @@ const project=mongoose.Schema({
     description:String,
     directories:[directory]
 })
+const project_list=mongoose.Schema({
+    project_id:String
+})
 const user=mongoose.Schema({
     name:String,
     email:String,
     password:String,
-    projects:[project]
+    projects:[project],
+    project_list:[project_list]
 })
 // projects:[{project}]
 module.exports=mongoose.model('user',user);
