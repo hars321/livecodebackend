@@ -78,8 +78,10 @@ app.post('/signup',(req,res)=>{
                 "name":"Directory - 1 ",
                 "subdirectories":[
                   
-                      {"name":"Subdirectory -1 ",
-                      "code":"Type your code here ..."}
+                    {
+                      "name":"Subdirectory -1 ",
+                      "code":"Type your code here ..."
+                    }
                   ]
               }
             ]
@@ -145,7 +147,7 @@ app.get('/findcodebyid/:code_id',(req,res)=>{
         for(let j=0 ; j<subdirectory.length ; j++){
           
           if(subdirectory[j]._id==code_id){
-            
+            console.log(data);
             return res.json({"code":subdirectory[j].code});
           }
 
@@ -155,6 +157,7 @@ app.get('/findcodebyid/:code_id',(req,res)=>{
   
   })
   .catch(err=>{
+    console.log(err);
     return res.status(404).json(err);
   })
 })
@@ -220,33 +223,87 @@ insertCodeWithId=(data)=>{
 
 }
 
-app.post('/updatecode',(req,res)=>{
-  // insertCodeWithId(req.body);
-  var subd_id=req.body.room;
-  
-  var code=req.body.code
+app.delete('/subdirectory/:id',(req,res)=>{
+  // 60269f1055f0113dd06a4b0b
+  var subdirectoryId = req.params.id;
+
   Schema.updateOne( 
 
-    {"projects.directories.subdirectories._id":subd_id } 
+    {"projects.directories.subdirectories._id":subdirectoryId } 
     , 
-    {$set : {"projects.$[].directories.$[].subdirectories.$[second].code":code} }
+    {$set : {"projects.$[].directories.$[].subdirectories[second]":[]} }
     ,
     {
       "arrayFilters": [
         { "second._id": subd_id }
+      ]
+    }
+  )
+  .then(data=>res.send(data))
+  .catch(err=>res.send(err));
+})
+
+app.get('/newsubdirectory/:id',(req,res)=>{
+  var directoryId = req.params.id;
+
+  Schema.update( 
+
+    {"projects.directories._id":directoryId } 
+    , 
+    {
+        $push: {
+          "projects.$[].directories.$[index].subdirectories":{
+            "name":"New Sub directory ",
+            "code":"Type your code here ..."
+        }
+      }
+    }
+    ,
+    {
+      "arrayFilters": [
+        { "index._id": directoryId }
+      ]
+     
+    }
+  )
+  .then(data=>res.send(data))
+  .catch(err=>res.send(err));
+
+})
+app.post('/updatecode',(req,res)=>{
+  // insertCodeWithId(req.body);
+  var subdirectoryId=req.body.room;
+  var code=req.body.code
+
+  Schema.updateOne( 
+
+    {
+      "projects.directories.subdirectories._id":subdirectoryId 
+    } 
+    , 
+    {
+      $set : {
+        "projects.$[].directories.$[].subdirectories.$[index].code":code
+      } 
+    }
+    ,
+    {
+      "arrayFilters": [
+        { 
+          "index._id": subdirectoryId 
+        }
       ]
      
     }
     
     )
     .then(data=>{
-      
       return res.send(data);
     })
     .catch(err=>{
       return res.send(404).send(err);
     })
-  // res.send("done")
+  
   
 })
 app.get('/getuserprojects',(req,res)=>{
